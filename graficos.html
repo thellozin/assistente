@@ -1,0 +1,106 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📊 Gráficos do Assistente Financeiro</title>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <link rel="stylesheet" href="/css/graficos.css">
+  <link rel="stylesheet" href="/css/header.css">
+</head>
+<header>
+  <!-- Botão hamburguer -->
+  <div id="menu-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="metas.html">Metas</a>
+    <a href="graficos.html">Graficos</a>
+    <a href="compras.html">Lista de Compras</a>
+    <a href="consulta.html">Consultas</a>
+  </nav>
+</header>
+
+
+<body>
+  <h1>📊 Painel de Gráficos</h1>
+  <a href="index.html" class="botao-voltar">⬅️ Voltar</a>
+
+
+  <div id="resumoGeral" class="resumo"></div>
+
+  <div class="box">
+    <h2>💰 Renda x Despesa</h2>
+    <canvas id="graficoRendaDespesa"></canvas>
+  </div>
+
+  <div class="box">
+    <h2>📊 Gastos por Mês</h2>
+    <canvas id="graficoMeses"></canvas>
+  </div>
+
+  <script>
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const nav = document.querySelector("header nav");
+
+    menuToggle.addEventListener("click", () => {
+      nav.classList.toggle("active");
+    });
+    // --- PEGAR DADOS DO LOCALSTORAGE ---
+    const rendas = JSON.parse(localStorage.getItem("rendas") || "[]");
+    const despesas = JSON.parse(localStorage.getItem("despesas") || "[]");
+
+    const totalRendas = rendas.reduce((acc, r) => acc + r.valor, 0);
+    const totalDespesas = despesas.reduce((acc, d) => acc + d.valor, 0);
+    const saldo = totalRendas - totalDespesas;
+
+    document.getElementById("resumoGeral").innerText =
+      `Total de rendas: R$ ${totalRendas} | Total de despesas: R$ ${totalDespesas} | Saldo: R$ ${saldo}`;
+
+    // --- GRAFICO RENDAS x DESPESAS ---
+    new Chart(document.getElementById("graficoRendaDespesa").getContext("2d"), {
+      type: 'bar',
+      data: {
+        labels: ['Rendas', 'Despesas', 'Saldo'],
+        datasets: [{
+          label: 'Valores',
+          data: [totalRendas, totalDespesas, saldo],
+          backgroundColor: ['#36A2EB', '#FF6384', '#4BC0C0']
+        }]
+      },
+      options: { responsive: true, scales: { y: { beginAtZero: true } } }
+    });
+
+    // --- GRAFICO DE CATEGORIAS ---
+    const categorias = {};
+    despesas.forEach(d => categorias[d.categoria] = (categorias[d.categoria] || 0) + d.valor);
+
+    new Chart(document.getElementById("graficoCategorias").getContext("2d"), {
+      type: 'pie',
+      data: { labels: Object.keys(categorias), datasets: [{ data: Object.values(categorias), backgroundColor: ['#FF6384', '#36A2EB', '#FFCE56', '#4BC0C0', '#9966FF', '#FF9F40'] }] },
+      options: { responsive: true, plugins: { legend: { position: 'bottom' } } }
+    });
+
+    // --- GRAFICO DE GASTOS POR MÊS ---
+    const meses = {};
+    despesas.forEach(d => {
+      const [dia, mes, ano] = d.data.split('/');
+      const chave = `${mes}/${ano}`;
+      meses[chave] = (meses[chave] || 0) + d.valor;
+    });
+
+    new Chart(document.getElementById("graficoMeses").getContext("2d"), {
+      type: 'bar',
+      data: { labels: Object.keys(meses), datasets: [{ label: 'Gastos por Mês', data: Object.values(meses), backgroundColor: '#36A2EB' }] },
+      options: { responsive: true, plugins: { legend: { display: false } }, scales: { y: { beginAtZero: true } } }
+    });
+  </script>
+</body>
+
+</html>

@@ -1,0 +1,128 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>🛒 Lista de Compras</title>
+  <link rel="stylesheet" href="/css/compras.css">
+  <link rel="stylesheet" href="/css/header.css">
+</head>
+<header>
+  <!-- Botão hamburguer -->
+  <div id="menu-toggle">
+    <span></span>
+    <span></span>
+    <span></span>
+  </div>
+
+  <nav>
+    <a href="index.html">Home</a>
+    <a href="metas.html">Metas</a>
+    <a href="graficos.html">Graficos</a>
+    <a href="compras.html">Lista de Compras</a>
+    <a href="consulta.html">Consultas</a>
+  </nav>
+</header>
+
+
+<body>
+  <h1>🛒 Minha Lista de Compras</h1>
+  <a href="index.html" class="botao-voltar">⬅️ Voltar</a>
+
+  <div class="box">
+    <h2>Adicionar Item</h2>
+    <input id="itemNome" type="text" placeholder="Nome do item">
+    <input id="itemQuantidade" type="number" placeholder="Quantidade" min="1">
+    <input id="itemPreco" type="number" placeholder="Preço unitário" min="0" step="0.01">
+    <button onclick="adicionarItem()">Adicionar</button>
+  </div>
+
+  <div class="box">
+    <h2>Itens da Lista</h2>
+    <ul id="listaCompras"></ul>
+    <p id="totalCompras"><b>Total:</b> R$ 0,00</p>
+  </div>
+
+  <script>
+
+    const menuToggle = document.getElementById("menu-toggle");
+    const nav = document.querySelector("header nav");
+
+    menuToggle.addEventListener("click", () => {
+      nav.classList.toggle("active");
+    });
+    let editandoItem = null;
+
+    function adicionarItem() {
+      let nome = document.getElementById("itemNome").value;
+      let quantidade = parseInt(document.getElementById("itemQuantidade").value);
+      let preco = parseFloat(document.getElementById("itemPreco").value);
+
+      if (!nome || isNaN(quantidade) || isNaN(preco)) return;
+
+      let lista = JSON.parse(localStorage.getItem("listaCompras")) || [];
+
+      if (editandoItem !== null) {
+        lista[editandoItem] = { nome, quantidade, preco, comprado: false };
+        editandoItem = null;
+      } else {
+        lista.push({ nome, quantidade, preco, comprado: false });
+      }
+
+      localStorage.setItem("listaCompras", JSON.stringify(lista));
+      document.getElementById("itemNome").value = "";
+      document.getElementById("itemQuantidade").value = "";
+      document.getElementById("itemPreco").value = "";
+      mostrarListaCompras();
+    }
+
+    function mostrarListaCompras() {
+      let lista = JSON.parse(localStorage.getItem("listaCompras")) || [];
+      let ul = document.getElementById("listaCompras");
+      ul.innerHTML = "";
+
+      let total = 0;
+
+      lista.forEach((item, i) => {
+        total += item.quantidade * item.preco;
+        ul.innerHTML += `
+          <li>
+            <input type="checkbox" ${item.comprado ? "checked" : ""} onclick="marcarComprado(${i})">
+            ${item.nome} - ${item.quantidade} x R$ ${item.preco.toFixed(2)} = R$ ${(item.quantidade * item.preco).toFixed(2)}
+            <button onclick="editarItem(${i})">✏️</button>
+            <button onclick="removerItem(${i})">❌</button>
+          </li>
+        `;
+      });
+
+      document.getElementById("totalCompras").innerHTML = `<b>Total:</b> R$ ${total.toFixed(2)}`;
+    }
+
+    function marcarComprado(i) {
+      let lista = JSON.parse(localStorage.getItem("listaCompras")) || [];
+      lista[i].comprado = !lista[i].comprado;
+      localStorage.setItem("listaCompras", JSON.stringify(lista));
+      mostrarListaCompras();
+    }
+
+    function editarItem(i) {
+      let lista = JSON.parse(localStorage.getItem("listaCompras")) || [];
+      document.getElementById("itemNome").value = lista[i].nome;
+      document.getElementById("itemQuantidade").value = lista[i].quantidade;
+      document.getElementById("itemPreco").value = lista[i].preco;
+      editandoItem = i;
+    }
+
+    function removerItem(i) {
+      let lista = JSON.parse(localStorage.getItem("listaCompras")) || [];
+      lista.splice(i, 1);
+      localStorage.setItem("listaCompras", JSON.stringify(lista));
+      mostrarListaCompras();
+    }
+
+    window.onload = mostrarListaCompras;
+  </script>
+</body>
+
+</html>

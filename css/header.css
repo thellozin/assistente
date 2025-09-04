@@ -1,0 +1,70 @@
+header {
+  background-color: #007bff;
+  color: #fff;
+  padding: 10px 20px;
+  border-radius: 6px;
+  margin-bottom: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+}
+
+header h1 {
+  font-size: 1.4rem;
+  margin: 0;
+}
+
+/* NAV normal */
+header nav {
+  display: flex;
+  gap: 10px;
+}
+
+header nav a {
+  color: #fff;
+  text-decoration: none;
+  font-weight: bold;
+  padding: 6px 10px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+header nav a:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* HAMBURGUER */
+#menu-toggle {
+  display: none;
+  flex-direction: column;
+  justify-content: space-between;
+  width: 25px;
+  height: 20px;
+  cursor: pointer;
+}
+
+#menu-toggle span {
+  display: block;
+  height: 3px;
+  background: #fff;
+  border-radius: 2px;
+}
+
+/* RESPONSIVO */
+@media (max-width: 768px) {
+  header nav {
+    display: none;
+    flex-direction: column;
+    width: 100%;
+    margin-top: 10px;
+  }
+
+  header nav.active {
+    display: flex;
+  }
+
+  #menu-toggle {
+    display: flex;
+  }
+}

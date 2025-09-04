@@ -1,0 +1,60 @@
+body {
+  font-family: Arial, sans-serif;
+  margin: 20px;
+  background: #f4f4f4;
+}
+
+h1 {
+  margin-bottom: 20px;
+}
+
+.box {
+  background: #fff;
+  padding: 15px;
+  margin-bottom: 20px;
+  border-radius: 8px;
+}
+
+input,
+button {
+  margin: 5px 0;
+  padding: 8px;
+}
+
+button {
+  cursor: pointer;
+}
+
+progress {
+  width: 80%;
+  height: 50px;
+}
+
+.depositos {
+  margin-left: 20px;
+  font-size: 14px;
+  color: #555;
+}
+
+.resumo {
+  background: #dff0d8;
+  padding: 10px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+}
+
+a.botao-voltar {
+  display: inline-block;
+  background-color: #007bff;
+  color: #fff;
+  padding: 6px 12px;
+  border-radius: 4px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.2s;
+  margin-bottom: 20px;
+}
+
+a.botao-voltar:hover {
+  background-color: #0056b3;
+}
