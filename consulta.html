@@ -2,12 +2,13 @@
 <html lang="pt-BR">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>📋 Consulta Financeira</title>
-    <link rel="stylesheet" href="consulta.css">
-    <link rel="stylesheet" href="header.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📋 Consulta Financeira</title>
+  <link rel="stylesheet" href="css/consulta.css">
+  <link rel="stylesheet" href="css/header.css">
 </head>
+
 <header>
   <!-- Botão hamburguer -->
   <div id="menu-toggle">
@@ -22,173 +23,90 @@
     <a href="graficos.html">Graficos</a>
     <a href="compras.html">Lista de Compras</a>
     <a href="consulta.html">Consultas</a>
+    <a href="calculadora.html">Calculadora</a>
   </nav>
 </header>
 
-
 <body>
 
-    <!-- DESPESAS -->
-    <div class="box">
-        <h2>Filtros de Despesas</h2>
-        <div class="filtros">
-            <input type="text" id="filtroNome" placeholder="Pesquisar nome...">
-            <select id="filtroCategoria">
-                <option value="">Todas as categorias</option>
-                <option value="Alimentação">Alimentação</option>
-                <option value="Transporte">Transporte</option>
-                <option value="Compras">Compras</option>
-                <option value="Saúde">Saúde</option>
-                <option value="Pessoal">Pessoal</option>
-                <option value="Assinaturas">Assinaturas</option>
-                <option value="Outros">Outros</option>
-            </select>
-            <button onclick="mostrarDespesas()">Aplicar Filtros</button>
-        </div>
-
-        <p id="totalDespesasFiltro"></p>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Valor</th>
-                    <th>Categoria</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaDespesas"></tbody>
-        </table>
+  <!-- DESPESAS -->
+  <div class="box">
+    <h2>Filtros de Despesas</h2>
+    <div class="filtros">
+      <input type="text" id="filtroNome" placeholder="Pesquisar nome...">
+      <select id="filtroCategoria">
+        <option value="">Todas as categorias</option>
+        <option value="Alimentação">Alimentação</option>
+        <option value="Transporte">Transporte</option>
+        <option value="Compras">Compras</option>
+        <option value="Saúde">Saúde</option>
+        <option value="Pessoal">Pessoal</option>
+        <option value="Assinaturas">Assinaturas</option>
+        <option value="Outros">Outros</option>
+      </select>
+      <button onclick="mostrarDespesas()">Aplicar Filtros</button>
     </div>
 
-    <!-- LEMBRETES -->
-    <div class="box">
-        <h2>Filtros de Lembretes</h2>
-        <div class="filtros">
-            <input type="text" id="filtroLembreteNome" placeholder="Pesquisar lembrete...">
-            <select id="filtroLembreteCategoria">
-                <option value="">Todas as categorias</option>
-                <option value="Aniversário">Aniversário</option>
-                <option value="Compras">Compras</option>
-                <option value="Trabalho">Trabalho</option>
-                <option value="Faculdade">Faculdade</option>
-                <option value="Outros">Outros</option>
-            </select>
-            <button onclick="mostrarLembretes()">Aplicar Filtros</button>
-        </div>
+    <p id="totalDespesasFiltro"></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Valor</th>
+          <th>Categoria</th>
+          <th>Status</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaDespesas"></tbody>
+    </table>
 
-        <table>
-            <thead>
-                <tr>
-                    <th>Lembrete</th>
-                    <th>Categoria</th>
-                    <th>Data</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaLembretes"></tbody>
-        </table>
+    <p id="totalDespesasAbertas"></p>
+    <p id="totalDespesasPagas"></p>
+  </div>
+
+  <!-- LEMBRETES -->
+  <div class="box">
+    <h2>Filtros de Lembretes</h2>
+    <div class="filtros">
+      <input type="text" id="filtroLembreteNome" placeholder="Pesquisar lembrete...">
+      <select id="filtroLembreteCategoria">
+        <option value="">Todas as categorias</option>
+        <option value="Aniversário">Aniversário</option>
+        <option value="Compras">Compras</option>
+        <option value="Trabalho">Trabalho</option>
+        <option value="Faculdade">Faculdade</option>
+        <option value="Outros">Outros</option>
+      </select>
+      <button onclick="mostrarLembretes()">Aplicar Filtros</button>
     </div>
 
-    <!-- RENDAS -->
-    <div class="box">
-        <h2>Rendas</h2>
-        <table>
-            <thead>
-                <tr>
-                    <th>Nome</th>
-                    <th>Valor</th>
-                </tr>
-            </thead>
-            <tbody id="tabelaRendas"></tbody>
-        </table>
-    </div>
+    <table>
+      <thead>
+        <tr>
+          <th>Lembrete</th>
+          <th>Categoria</th>
+          <th>Data</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaLembretes"></tbody>
+    </table>
+  </div>
 
-    <script>
+  <!-- RENDAS -->
+  <div class="box">
+    <h2>Rendas</h2>
+    <p id="totalRendas"></p>
+    <table>
+      <thead>
+        <tr>
+          <th>Nome</th>
+          <th>Valor</th>
+        </tr>
+      </thead>
+      <tbody id="tabelaRendas"></tbody>
+    </table>
+  </div>
 
-        const menuToggle = document.getElementById("menu-toggle");
-        const nav = document.querySelector("header nav");
-
-        menuToggle.addEventListener("click", () => {
-            nav.classList.toggle("active");
-        });
-        // ======== TEMA ESCURO ========
-        function toggleTema() {
-            document.body.classList.toggle("dark");
-            localStorage.setItem("tema", document.body.classList.contains("dark") ? "dark" : "light");
-        }
-        if (localStorage.getItem("tema") === "dark") document.body.classList.add("dark");
-
-        // ======== DESPESAS ========
-        function mostrarDespesas() {
-            let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-            const nomeFiltro = document.getElementById("filtroNome").value.toLowerCase();
-            const catFiltro = document.getElementById("filtroCategoria").value;
-
-            let tabela = document.getElementById("tabelaDespesas");
-            tabela.innerHTML = "";
-
-            let total = 0;
-
-            despesas.forEach(d => {
-                let inclui = true;
-                if (nomeFiltro) inclui = inclui && d.nome.toLowerCase().includes(nomeFiltro);
-                if (catFiltro) inclui = inclui && d.categoria === catFiltro;
-
-                if (inclui) {
-                    tabela.innerHTML += `<tr>
-                        <td>${d.nome}</td>
-                        <td>R$ ${d.valor}</td>
-                        <td>${d.categoria || 'Outros'}</td>
-                    </tr>`;
-                    total += d.valor;
-                }
-            });
-
-            document.getElementById("totalDespesasFiltro").innerText = `Total: R$ ${total}`;
-        }
-
-        // ======== LEMBRETES ========
-        function mostrarLembretes() {
-            let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-            const nomeFiltro = document.getElementById("filtroLembreteNome").value.toLowerCase();
-            const catFiltro = document.getElementById("filtroLembreteCategoria").value;
-            const tabela = document.getElementById("tabelaLembretes");
-            tabela.innerHTML = "";
-
-            lembretes.forEach(l => {
-                let inclui = true;
-                if (nomeFiltro) inclui = inclui && l.texto.toLowerCase().includes(nomeFiltro);
-                if (catFiltro) inclui = inclui && l.categoria === catFiltro;
-
-                if (inclui) {
-                    tabela.innerHTML += `<tr>
-                        <td>${l.texto}</td>
-                        <td>${l.categoria || 'Outros'}</td>
-                        <td>${l.data || '-'}</td>
-                    </tr>`;
-                }
-            });
-        }
-
-        // ======== RENDAS ========
-        function mostrarRendas() {
-            let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
-            const tabela = document.getElementById("tabelaRendas");
-            tabela.innerHTML = "";
-
-            rendas.forEach(r => {
-                tabela.innerHTML += `<tr>
-                    <td>${r.nome}</td>
-                    <td>R$ ${r.valor}</td>
-                </tr>`;
-            });
-        }
-
-        // ======== INICIALIZAÇÃO ========
-        window.onload = () => {
-            mostrarDespesas();
-            mostrarLembretes();
-            mostrarRendas();
-        };
-    </script>
+  <script src="js/consulta.js"></script>
 </body>
-
 </html>

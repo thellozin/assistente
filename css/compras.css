@@ -40,6 +40,8 @@ button {
     font-size: 1rem;
 }
 
+
+
 button {
     cursor: pointer;
     background: #007bff;
@@ -122,3 +124,26 @@ a.botao-voltar:hover {
         font-size: 0.9rem;
     }
 }
+
+/* deixa os botões lado a lado e com espaçamento */
+.botoes-item {
+  display: flex;
+  gap: 5px; /* espaço entre os botões */
+  margin-top: 5px;
+}
+
+/* opcional: ajusta para mobile */
+@media (max-width: 600px) {
+  .botoes-item {
+    justify-content: flex-start; /* mantém os botões lado a lado */
+  }
+
+  #listaCompras li {
+    display: flex;
+    flex-direction: row; /* mantém o texto e os botões na mesma linha */
+    flex-wrap: wrap; /* permite quebrar linha se necessário */
+    align-items: center;
+    justify-content: space-between;
+  }
+}
+

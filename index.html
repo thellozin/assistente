@@ -5,9 +5,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Assistente Financeiro</title>
-  <link rel="stylesheet" href="index.css">
-  <link rel="stylesheet" href="header.css">
+  <link rel="stylesheet" href="css/index.css">
+  <link rel="stylesheet" href="css/header.css">
 </head>
+
 <header>
   <!-- Botão hamburguer -->
   <div id="menu-toggle">
@@ -22,9 +23,9 @@
     <a href="graficos.html">Graficos</a>
     <a href="compras.html">Lista de Compras</a>
     <a href="consulta.html">Consultas</a>
+    <a href="calculadora.html">Calculadora</a>
   </nav>
 </header>
-
 
 <body>
   <h1>📊 Meu Assistente Financeiro</h1>
@@ -61,6 +62,7 @@
   <div class="box">
     <h2>🔔 Lembretes</h2>
     <input id="lembrete" type="text" placeholder="Digite seu lembrete">
+    <input id="lembreteData" type="date" placeholder="Data (opcional)">
     <select id="lembreteCategoria">
       <option value="">Selecionar categoria</option>
       <option value="Aniversário">Aniversário</option>
@@ -79,201 +81,6 @@
     <p id="resumo"></p>
   </div>
 
-  <script>
-
-    const menuToggle = document.getElementById("menu-toggle");
-    const nav = document.querySelector("header nav");
-
-    menuToggle.addEventListener("click", () => {
-      nav.classList.toggle("active");
-    });
-
-    let editandoRenda = null;
-    let editandoDespesa = null;
-    let editandoLembrete = null;
-
-    window.onload = () => {
-      mostrarRendas();
-      mostrarDespesas();
-      mostrarLembretes();
-      calcularResumo();
-    };
-
-    // ===== Função para formatar datas em dd/mm/yyyy =====
-    function formatarData(dataISO) {
-      if (!dataISO) return '';
-      const [ano, mes, dia] = dataISO.split("-");
-      return `${dia}/${mes}/${ano}`;
-    }
-
-    // ----- RENDAS -----
-    function salvarRenda() {
-      let nome = document.getElementById("rendaNome").value;
-      let valor = parseFloat(document.getElementById("rendaValor").value);
-      if (!nome || isNaN(valor)) return;
-
-      let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
-      if (editandoRenda !== null) {
-        rendas[editandoRenda] = { nome, valor };
-        editandoRenda = null;
-      } else {
-        rendas.push({ nome, valor });
-      }
-
-      localStorage.setItem("rendas", JSON.stringify(rendas));
-      document.getElementById("rendaNome").value = "";
-      document.getElementById("rendaValor").value = "";
-      mostrarRendas();
-      calcularResumo();
-    }
-
-    function mostrarRendas() {
-      let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
-      let lista = document.getElementById("listaRendas");
-      lista.innerHTML = "";
-      rendas.forEach((r, i) => {
-        lista.innerHTML += `<li>${r.nome} - R$ ${r.valor} 
-          <button onclick="editarRenda(${i})">✏️</button> 
-          <button onclick="removerRenda(${i})">❌</button></li>`;
-      });
-    }
-
-    function editarRenda(i) {
-      let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
-      document.getElementById("rendaNome").value = rendas[i].nome;
-      document.getElementById("rendaValor").value = rendas[i].valor;
-      editandoRenda = i;
-    }
-
-    function removerRenda(i) {
-      let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
-      rendas.splice(i, 1);
-      localStorage.setItem("rendas", JSON.stringify(rendas));
-      mostrarRendas();
-      calcularResumo();
-    }
-
-    // ----- DESPESAS -----
-    function salvarDespesa() {
-      let nome = document.getElementById("despesaNome").value;
-      let valor = parseFloat(document.getElementById("despesaValor").value);
-      let categoria = document.getElementById("despesaCategoria").value || "Outros";
-
-      if (!nome || isNaN(valor)) return;
-
-      // Data automática
-      let data = new Date().toISOString().split("T")[0];
-
-      let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-      if (editandoDespesa !== null) {
-        despesas[editandoDespesa] = { nome, valor, categoria, data };
-        editandoDespesa = null;
-      } else {
-        despesas.push({ nome, valor, categoria, data });
-      }
-
-      localStorage.setItem("despesas", JSON.stringify(despesas));
-      document.getElementById("despesaNome").value = "";
-      document.getElementById("despesaValor").value = "";
-      document.getElementById("despesaCategoria").value = "";
-      mostrarDespesas();
-      calcularResumo();
-    }
-
-    function mostrarDespesas() {
-      let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-      let lista = document.getElementById("listaDespesas");
-      lista.innerHTML = "";
-      despesas.forEach((d, i) => {
-        lista.innerHTML += `<li>${d.nome} - R$ ${d.valor} - ${d.categoria} - ${formatarData(d.data)}
-          <button onclick="editarDespesa(${i})">✏️</button> 
-          <button onclick="removerDespesa(${i})">❌</button></li>`;
-      });
-    }
-
-    function editarDespesa(i) {
-      let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-      document.getElementById("despesaNome").value = despesas[i].nome;
-      document.getElementById("despesaValor").value = despesas[i].valor;
-      document.getElementById("despesaCategoria").value = despesas[i].categoria;
-      editandoDespesa = i;
-    }
-
-    function removerDespesa(i) {
-      let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-      despesas.splice(i, 1);
-      localStorage.setItem("despesas", JSON.stringify(despesas));
-      mostrarDespesas();
-      calcularResumo();
-    }
-
-    // ----- LEMBRETES -----
-    function salvarLembrete() {
-      let texto = document.getElementById("lembrete").value;
-      let categoria = document.getElementById("lembreteCategoria").value || "Outros";
-      if (!texto) return;
-
-      let hoje = new Date().toISOString().split("T")[0];
-
-      let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-      if (editandoLembrete !== null) {
-        lembretes[editandoLembrete] = { texto, categoria, data: hoje };
-        editandoLembrete = null;
-      } else {
-        lembretes.push({ texto, categoria, data: hoje });
-      }
-
-      localStorage.setItem("lembretes", JSON.stringify(lembretes));
-      document.getElementById("lembrete").value = "";
-      document.getElementById("lembreteCategoria").value = "";
-      mostrarLembretes();
-    }
-
-    function mostrarLembretes() {
-      let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-      let lista = document.getElementById("listaLembretes");
-      lista.innerHTML = "";
-
-      let hoje = new Date().toISOString().split("T")[0];
-
-      lembretes.forEach((l, i) => {
-        let status = "";
-        if (l.data < hoje) status = "⚠️ Vencido";
-        else if (l.data === hoje) status = "📌 Hoje";
-
-        lista.innerHTML += `<li>${l.texto} - ${l.categoria} - ${formatarData(l.data)} ${status}
-          <button onclick="editarLembrete(${i})">✏️</button> 
-          <button onclick="removerLembrete(${i})">❌</button>
-        </li>`;
-      });
-    }
-
-    function editarLembrete(i) {
-      let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-      document.getElementById("lembrete").value = lembretes[i].texto;
-      document.getElementById("lembreteCategoria").value = lembretes[i].categoria;
-      editandoLembrete = i;
-    }
-
-    function removerLembrete(i) {
-      let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-      lembretes.splice(i, 1);
-      localStorage.setItem("lembretes", JSON.stringify(lembretes));
-      mostrarLembretes();
-    }
-
-    // ----- RESUMO -----
-    function calcularResumo() {
-      let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
-      let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
-      let totalRendas = rendas.reduce((acc, r) => acc + r.valor, 0);
-      let totalDespesas = despesas.reduce((acc, d) => acc + d.valor, 0);
-      let saldo = totalRendas - totalDespesas;
-
-      document.getElementById("resumo").innerText =
-        `Total de rendas: R$ ${totalRendas} | Total de despesas: R$ ${totalDespesas} | Saldo: R$ ${saldo}`;
-    }
-  </script>
+  <script src="js/index.js"></script>
 </body>
-
 </html>
