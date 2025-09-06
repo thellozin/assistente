@@ -1,14 +1,14 @@
-// Menu hamburguer
+// ----- MENU HAMBURGUER -----
 const menuToggle = document.getElementById("menu-toggle");
 const nav = document.querySelector("header nav");
 menuToggle.addEventListener("click", () => nav.classList.toggle("active"));
 
-// Variáveis de edição
+// ----- VARIÁVEIS DE EDIÇÃO -----
 let editandoRenda = null;
 let editandoDespesa = null;
 let editandoLembrete = null;
 
-// Inicialização
+// ----- INICIALIZAÇÃO -----
 window.onload = () => {
   mostrarRendas();
   mostrarDespesas();
@@ -16,16 +16,16 @@ window.onload = () => {
   calcularResumo();
 };
 
-// Função para formatar datas em dd/mm/yyyy
+// ----- FUNÇÃO DE FORMATAÇÃO DE DATAS -----
 function formatarData(dataISO) {
   if (!dataISO) return '';
   const [ano, mes, dia] = dataISO.split("-");
   return `${dia}/${mes}/${ano}`;
 }
 
-// ----- RENDAS -----
+// ====================== RENDAS ======================
 function salvarRenda() {
-  let nome = document.getElementById("rendaNome").value;
+  let nome = document.getElementById("rendaNome").value.trim();
   let valor = parseFloat(document.getElementById("rendaValor").value);
   if (!nome || isNaN(valor)) return;
 
@@ -49,7 +49,7 @@ function mostrarRendas() {
   let lista = document.getElementById("listaRendas");
   lista.innerHTML = "";
   rendas.forEach((r, i) => {
-    lista.innerHTML += `<li>${r.nome} - R$ ${r.valor} 
+    lista.innerHTML += `<li>${r.nome} - R$ ${r.valor.toFixed(2)} 
       <button onclick="editarRenda(${i})">✏️</button> 
       <button onclick="removerRenda(${i})">❌</button></li>`;
   });
@@ -70,9 +70,9 @@ function removerRenda(i) {
   calcularResumo();
 }
 
-// ----- DESPESAS -----
+// ====================== DESPESAS ======================
 function salvarDespesa() {
-  let nome = document.getElementById("despesaNome").value;
+  let nome = document.getElementById("despesaNome").value.trim();
   let valor = parseFloat(document.getElementById("despesaValor").value);
   let categoria = document.getElementById("despesaCategoria").value || "Outros";
   if (!nome || isNaN(valor)) return;
@@ -114,7 +114,7 @@ function mostrarDespesas() {
       : `<button onclick="marcarComoPaga(${i})">✔️ Pagar</button>`;
 
     lista.innerHTML += `<li>
-      ${d.nome} - R$ ${d.valor} - ${d.categoria} - ${status}
+      ${d.nome} - R$ ${d.valor.toFixed(2)} - ${d.categoria} - ${status}
       <button onclick="editarDespesa(${i})">✏️</button> 
       <button onclick="removerDespesa(${i})">🗑️</button>
       ${botaoAcao}
@@ -156,82 +156,63 @@ function removerDespesa(i) {
 
 function adicionarCategoria() {
   const select = document.getElementById("despesaCategoria");
-  const novaCategoriaInput = document.getElementById("novaCategoria");
-  const novaCategoria = novaCategoriaInput.value.trim();
+  const novaCategoria = document.getElementById("novaCategoria").value.trim();
+  if (!novaCategoria) return alert("Digite o nome da categoria!");
 
-  if (novaCategoria !== "") {
-    // Verifica se já existe
-    for (let opt of select.options) {
-      if (opt.value.toLowerCase() === novaCategoria.toLowerCase()) {
-        alert("Essa categoria já existe!");
-        return;
-      }
-    }
-
-    // Cria a nova opção
-    const option = document.createElement("option");
-    option.value = novaCategoria;
-    option.textContent = novaCategoria;
-
-    // Adiciona antes do "Outros"
-    const outros = Array.from(select.options).find(opt => opt.value === "Outros");
-    select.insertBefore(option, outros);
-
-    // Seleciona automaticamente a nova categoria
-    select.value = novaCategoria;
-
-    // Limpa input
-    novaCategoriaInput.value = "";
-  } else {
-    alert("Digite um nome para a categoria!");
+  if (Array.from(select.options).some(opt => opt.value.toLowerCase() === novaCategoria.toLowerCase())) {
+    return alert("Essa categoria já existe!");
   }
+
+  const option = document.createElement("option");
+  option.value = novaCategoria;
+  option.textContent = novaCategoria;
+
+  const outros = Array.from(select.options).find(opt => opt.value === "Outros");
+  select.insertBefore(option, outros);
+  select.value = novaCategoria;
+  document.getElementById("novaCategoria").value = "";
 }
 
 function removerCategoria() {
   const select = document.getElementById("despesaCategoria");
-  const categoriaSelecionada = select.value;
+  const categoria = select.value;
+  if (!categoria || categoria === "Outros") return alert("Selecione uma categoria válida para remover.");
 
-  if (categoriaSelecionada === "" || categoriaSelecionada === "Outros") {
-    alert("Selecione uma categoria válida (não é possível remover 'Outros').");
-    return;
-  }
-
-  // Remove categoria selecionada
   select.remove(select.selectedIndex);
-
-  // Volta para categoria vazia
   select.value = "";
 }
 
-
-
-// ----- LEMBRETES -----
+// ====================== LEMBRETES ======================
 function salvarLembrete() {
-  let texto = document.getElementById("lembrete").value;
+  let texto = document.getElementById("lembrete").value.trim();
   let categoria = document.getElementById("lembreteCategoria").value || "Outros";
-  let data = document.getElementById("lembreteData").value || null;
+  let dataInput = document.getElementById("lembreteData").value;
 
-  if (!texto) return;
+  if (!texto) return alert("Digite um lembrete!");
 
   let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
-
   if (editandoLembrete !== null) {
     let antiga = lembretes[editandoLembrete];
     lembretes[editandoLembrete] = {
       texto,
       categoria,
-      data: data || antiga.data || null
+      data: dataInput || antiga.data || null
     };
     editandoLembrete = null;
   } else {
-    lembretes.push({ texto, categoria, data });
+    lembretes.push({ texto, categoria, data: dataInput || null });
   }
 
   localStorage.setItem("lembretes", JSON.stringify(lembretes));
+  mostrarLembretes();
+
+  // Limpar campos
   document.getElementById("lembrete").value = "";
   document.getElementById("lembreteData").value = "";
   document.getElementById("lembreteCategoria").value = "";
-  mostrarLembretes();
+
+  // Google Calendar
+  if (dataInput) criarLinkEventoGoogleLocal(texto, categoria, dataInput);
 }
 
 function mostrarLembretes() {
@@ -243,7 +224,6 @@ function mostrarLembretes() {
   lembretes.forEach((l, i) => {
     let status = "";
     let dataTexto = l.data ? formatarData(l.data) : "Sem data definida";
-
     if (l.data) {
       if (l.data < hoje) status = "⚠️ Vencido";
       else if (l.data === hoje) status = "📌 Hoje";
@@ -260,6 +240,7 @@ function editarLembrete(i) {
   let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
   document.getElementById("lembrete").value = lembretes[i].texto;
   document.getElementById("lembreteCategoria").value = lembretes[i].categoria;
+  document.getElementById("lembreteData").value = lembretes[i].data || "";
   editandoLembrete = i;
 }
 
@@ -270,7 +251,43 @@ function removerLembrete(i) {
   mostrarLembretes();
 }
 
-// ----- RESUMO -----
+function adicionarCategoriaLembrete() {
+  const select = document.getElementById("lembreteCategoria");
+  const novaCategoria = document.getElementById("novaCategoriaLembrete").value.trim();
+  if (!novaCategoria) return alert("Digite o nome da categoria!");
+
+  if (Array.from(select.options).some(opt => opt.value.toLowerCase() === novaCategoria.toLowerCase())) {
+    return alert("Categoria já existe!");
+  }
+
+  const option = document.createElement("option");
+  option.value = novaCategoria;
+  option.textContent = novaCategoria;
+
+  const outros = Array.from(select.options).find(opt => opt.value === "Outros");
+  select.insertBefore(option, outros);
+  select.value = novaCategoria;
+  document.getElementById("novaCategoriaLembrete").value = "";
+}
+
+function removerCategoriaLembrete() {
+  const select = document.getElementById("lembreteCategoria");
+  const valor = select.value;
+  if (!valor || valor === "Outros") return alert("Selecione uma categoria válida para remover.");
+  select.remove(select.selectedIndex);
+  select.value = "";
+}
+
+// ----- GOOGLE CALENDAR -----
+function criarLinkEventoGoogleLocal(titulo, descricao, data) {
+  const [ano, mes, dia] = data.split("-");
+  const dtStart = `${ano}${mes}${dia}T090000`;
+  const dtEnd = `${ano}${mes}${dia}T100000`;
+  const url = `https://www.google.com/calendar/render?action=TEMPLATE&text=${encodeURIComponent(titulo)}&details=${encodeURIComponent(descricao)}&dates=${dtStart}/${dtEnd}`;
+  window.open(url, "_blank");
+}
+
+// ====================== RESUMO ======================
 function calcularResumo() {
   let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
   let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
@@ -292,5 +309,4 @@ function calcularResumo() {
     ` └ Pagas: R$ ${totalDespesasPagas.toFixed(2)} | Em aberto: R$ ${totalDespesasAbertas.toFixed(2)}<br>` +
     `Saldo atual: <span style="color:${corAtual}">R$ ${saldoAtual.toFixed(2)}</span><br>` +
     `Saldo projetado: <span style="color:${corProjetado}">R$ ${saldoProjetado.toFixed(2)}</span>`;
-
 }

@@ -80,7 +80,10 @@
       <option value="Faculdade">Faculdade</option>
       <option value="Outros">Outros</option>
     </select>
-    <button onclick="salvarLembrete()">Salvar</button>
+    <input id="novaCategoriaLembrete" type="text" placeholder="Nova categoria">
+    <button onclick="adicionarCategoriaLembrete()">➕ Adicionar</button>
+    <button onclick="removerCategoriaLembrete()">🗑️ Remover</button>
+    <button onclick="salvarLembrete()">💾 Salvar Lembrete</button>
     <ul id="listaLembretes"></ul>
   </div>
 
