@@ -1,6 +1,5 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
-
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,10 +9,8 @@
 </head>
 
 <body>
-
   <!-- HEADER -->
   <header>
-    <!-- Botão hamburguer -->
     <div id="menu-toggle">
       <span></span>
       <span></span>
@@ -28,20 +25,28 @@
       <a href="consulta.html">Consultas</a>
       <a href="calculadora.html">Calculadora</a>
       <a href="blocoNotas.html">Bloco de Notas</a>
-
     </nav>
   </header>
 
-  <h1>📝 Bloco de Notas</h1>
-
-  <div class="box" id="novaNota">
-    <input type="text" id="tituloNota" placeholder="Título da nota...">
-    <button onclick="adicionarNota()">➕ Adicionar</button>
+  <div class="box">
+    <h2>Criar Nota</h2>
+    <input type="text" id="notaTitulo" placeholder="Título (opcional)">
+    <textarea id="notaConteudo" placeholder="Digite sua nota..."></textarea>
+    <button onclick="salvarNota()">Salvar Nota</button>
   </div>
 
-  <div id="notas" class="box"></div>
+  <div class="box">
+    <h2>Notas</h2>
+    <div>
+      Ordenar por:
+      <select id="ordenacaoNotas" onchange="mostrarNotas()">
+        <option value="recentes">Mais recentes</option>
+        <option value="antigas">Mais antigas</option>
+      </select>
+    </div>
+    <ul id="listaNotas"></ul>
+  </div>
 
   <script src="js/blocoNotas.js"></script>
 </body>
-
 </html>
