@@ -44,6 +44,8 @@
     <h2>📉 Despesas</h2>
     <input id="despesaNome" type="text" placeholder="Nome da despesa">
     <input id="despesaValor" type="number" placeholder="Valor">
+
+    <!-- Select com categorias -->
     <select id="despesaCategoria">
       <option value="">Categoria</option>
       <option value="Alimentação">Alimentação</option>
@@ -54,9 +56,16 @@
       <option value="Assinaturas">Assinaturas</option>
       <option value="Outros">Outros</option>
     </select>
+
+    <!-- Campo para gerenciar categorias -->
+    <input id="novaCategoria" type="text" placeholder="Nova categoria">
+    <button onclick="adicionarCategoria()">➕ Adicionar</button>
+    <button onclick="removerCategoria()">🗑️ Remover</button>
+
     <button onclick="salvarDespesa()">Salvar</button>
     <ul id="listaDespesas"></ul>
   </div>
+
 
   <!-- LEMBRETES -->
   <div class="box">
@@ -83,4 +92,5 @@
 
   <script src="js/index.js"></script>
 </body>
+
 </html>

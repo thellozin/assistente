@@ -154,6 +154,57 @@ function removerDespesa(i) {
   calcularResumo();
 }
 
+function adicionarCategoria() {
+  const select = document.getElementById("despesaCategoria");
+  const novaCategoriaInput = document.getElementById("novaCategoria");
+  const novaCategoria = novaCategoriaInput.value.trim();
+
+  if (novaCategoria !== "") {
+    // Verifica se já existe
+    for (let opt of select.options) {
+      if (opt.value.toLowerCase() === novaCategoria.toLowerCase()) {
+        alert("Essa categoria já existe!");
+        return;
+      }
+    }
+
+    // Cria a nova opção
+    const option = document.createElement("option");
+    option.value = novaCategoria;
+    option.textContent = novaCategoria;
+
+    // Adiciona antes do "Outros"
+    const outros = Array.from(select.options).find(opt => opt.value === "Outros");
+    select.insertBefore(option, outros);
+
+    // Seleciona automaticamente a nova categoria
+    select.value = novaCategoria;
+
+    // Limpa input
+    novaCategoriaInput.value = "";
+  } else {
+    alert("Digite um nome para a categoria!");
+  }
+}
+
+function removerCategoria() {
+  const select = document.getElementById("despesaCategoria");
+  const categoriaSelecionada = select.value;
+
+  if (categoriaSelecionada === "" || categoriaSelecionada === "Outros") {
+    alert("Selecione uma categoria válida (não é possível remover 'Outros').");
+    return;
+  }
+
+  // Remove categoria selecionada
+  select.remove(select.selectedIndex);
+
+  // Volta para categoria vazia
+  select.value = "";
+}
+
+
+
 // ----- LEMBRETES -----
 function salvarLembrete() {
   let texto = document.getElementById("lembrete").value;
@@ -236,9 +287,10 @@ function calcularResumo() {
   let corProjetado = saldoProjetado >= 0 ? "green" : "red";
 
   document.getElementById("resumo").innerHTML =
-    `Total de rendas: R$ ${totalRendas}<br>` +
-    `Total de despesas: R$ ${totalDespesas}<br>` +
-    ` └ Pagas: R$ ${totalDespesasPagas} | Em aberto: R$ ${totalDespesasAbertas}<br>` +
-    `Saldo atual: <span style="color:${corAtual}">R$ ${saldoAtual}</span><br>` +
-    `Saldo projetado: <span style="color:${corProjetado}">R$ ${saldoProjetado}</span>`;
+    `Total de rendas: R$ ${totalRendas.toFixed(2)}<br>` +
+    `Total de despesas: R$ ${totalDespesas.toFixed(2)}<br>` +
+    ` └ Pagas: R$ ${totalDespesasPagas.toFixed(2)} | Em aberto: R$ ${totalDespesasAbertas.toFixed(2)}<br>` +
+    `Saldo atual: <span style="color:${corAtual}">R$ ${saldoAtual.toFixed(2)}</span><br>` +
+    `Saldo projetado: <span style="color:${corProjetado}">R$ ${saldoProjetado.toFixed(2)}</span>`;
+
 }
