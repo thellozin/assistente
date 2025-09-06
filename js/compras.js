@@ -70,10 +70,13 @@ function editarItem(i) {
 }
 
 function removerItem(i) {
+  if (!confirm("Tem certeza que deseja remover este item da lista de compras?")) return;
+
   let lista = JSON.parse(localStorage.getItem("listaCompras")) || [];
   lista.splice(i, 1);
   localStorage.setItem("listaCompras", JSON.stringify(lista));
   mostrarListaCompras();
 }
+
 
 window.onload = mostrarListaCompras;

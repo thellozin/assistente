@@ -65,12 +65,15 @@ function editarRenda(i) {
 }
 
 function removerRenda(i) {
+  if (!confirm("Tem certeza que deseja remover esta renda?")) return;
+  
   let rendas = JSON.parse(localStorage.getItem("rendas")) || [];
   rendas.splice(i, 1);
   localStorage.setItem("rendas", JSON.stringify(rendas));
   mostrarRendas();
   calcularResumo();
 }
+
 
 // ====================== DESPESAS ======================
 function salvarDespesa() {
@@ -149,12 +152,15 @@ function editarDespesa(i) {
 }
 
 function removerDespesa(i) {
+  if (!confirm("Tem certeza que deseja remover esta despesa?")) return;
+  
   let despesas = JSON.parse(localStorage.getItem("despesas")) || [];
   despesas.splice(i, 1);
   localStorage.setItem("despesas", JSON.stringify(despesas));
   mostrarDespesas();
   calcularResumo();
 }
+
 
 // ----- CATEGORIAS DESPESAS -----
 function adicionarCategoria() {
@@ -267,11 +273,14 @@ function editarLembrete(i) {
 }
 
 function removerLembrete(i) {
+  if (!confirm("Tem certeza que deseja remover este lembrete?")) return;
+  
   let lembretes = JSON.parse(localStorage.getItem("lembretes")) || [];
   lembretes.splice(i, 1);
   localStorage.setItem("lembretes", JSON.stringify(lembretes));
   mostrarLembretes();
 }
+
 
 // ----- CATEGORIAS LEMBRETES -----
 function adicionarCategoriaLembrete() {

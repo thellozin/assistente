@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>📝 Bloco de Notas</title>
+  <link rel="stylesheet" href="css/blocoNotas.css">
+  <link rel="stylesheet" href="css/header.css">
+</head>
+
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <!-- Botão hamburguer -->
+    <div id="menu-toggle">
+      <span></span>
+      <span></span>
+      <span></span>
+    </div>
+
+    <nav>
+      <a href="index.html">Home</a>
+      <a href="metas.html">Metas</a>
+      <a href="graficos.html">Graficos</a>
+      <a href="compras.html">Lista de Compras</a>
+      <a href="consulta.html">Consultas</a>
+      <a href="calculadora.html">Calculadora</a>
+      <a href="blocoNotas.html">Bloco de Notas</a>
+
+    </nav>
+  </header>
+
+  <h1>📝 Bloco de Notas</h1>
+
+  <div class="box" id="novaNota">
+    <input type="text" id="tituloNota" placeholder="Título da nota...">
+    <button onclick="adicionarNota()">➕ Adicionar</button>
+  </div>
+
+  <div id="notas" class="box"></div>
+
+  <script src="js/blocoNotas.js"></script>
+</body>
+
+</html>
