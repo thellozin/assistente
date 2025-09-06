@@ -27,7 +27,7 @@ function mostrarDespesas() {
       let status = d.paga ? "✅ Pago" : "❌ Em aberto";
       tabela.innerHTML += `<tr>
         <td>${d.nome}</td>
-        <td>R$ ${d.valor}</td>
+        <td>R$ ${d.valor.toFixed(2)}</td>
         <td>${d.categoria || 'Outros'}</td>
         <td>${status}</td>
       </tr>`;
@@ -38,9 +38,25 @@ function mostrarDespesas() {
     else totalAbertas += d.valor;
   });
 
-  document.getElementById("totalDespesasFiltro").innerText = `Total (com filtros): R$ ${totalFiltro}`;
-  document.getElementById("totalDespesasAbertas").innerText = `Total em aberto: R$ ${totalAbertas}`;
-  document.getElementById("totalDespesasPagas").innerText = `Total pagas: R$ ${totalPagas}`;
+  document.getElementById("totalDespesasFiltro").innerText = `Total (com filtros): R$ ${totalFiltro.toFixed(2)}`;
+  document.getElementById("totalDespesasAbertas").innerText = `Total em aberto: R$ ${totalAbertas.toFixed(2)}`;
+  document.getElementById("totalDespesasPagas").innerText = `Total pagas: R$ ${totalPagas.toFixed(2)}`;
+}
+
+function carregarCategoriasDespesas() {
+  const select = document.getElementById("filtroCategoria");
+  const categorias = JSON.parse(localStorage.getItem("categoriasDespesas")) || [
+    "Alimentação","Transporte","Compras","Saúde","Pessoal","Assinaturas","Outros"
+  ];
+
+  select.innerHTML = '<option value="">Todas as categorias</option>';
+
+  categorias.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
+  });
 }
 
 // ======== LEMBRETES ========
@@ -60,9 +76,24 @@ function mostrarLembretes() {
       tabela.innerHTML += `<tr>
         <td>${l.texto}</td>
         <td>${l.categoria || 'Outros'}</td>
-        <td>${l.data || '-'}</td>
+        <td>${l.data ? l.data.split("-").reverse().join("/") : '-'}</td>
       </tr>`;
     }
+  });
+}
+
+function carregarCategoriasLembretes() {
+  const select = document.getElementById("filtroLembreteCategoria");
+  const categorias = JSON.parse(localStorage.getItem("categoriasLembretes")) || [
+    "Aniversário","Compras","Trabalho","Faculdade","Outros"
+  ];
+
+  select.innerHTML = '<option value="">Todas as categorias</option>';
+  categorias.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
   });
 }
 
@@ -76,16 +107,18 @@ function mostrarRendas() {
   rendas.forEach(r => {
     tabela.innerHTML += `<tr>
       <td>${r.nome}</td>
-      <td>R$ ${r.valor}</td>
+      <td>R$ ${r.valor.toFixed(2)}</td>
     </tr>`;
     total += r.valor;
   });
 
-  document.getElementById("totalRendas").innerText = `Total de rendas: R$ ${total}`;
+  document.getElementById("totalRendas").innerText = `Total de rendas: R$ ${total.toFixed(2)}`;
 }
 
 // ======== INICIALIZAÇÃO ========
 window.onload = () => {
+  carregarCategoriasDespesas();
+  carregarCategoriasLembretes();
   mostrarDespesas();
   mostrarLembretes();
   mostrarRendas();

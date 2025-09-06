@@ -10,13 +10,15 @@ let editandoLembrete = null;
 
 // ----- INICIALIZAÇÃO -----
 window.onload = () => {
+  carregarCategoriasDespesas();
+  carregarCategoriasLembretes();
   mostrarRendas();
   mostrarDespesas();
   mostrarLembretes();
   calcularResumo();
 };
 
-// ----- FUNÇÃO DE FORMATAÇÃO DE DATAS -----
+// ----- FORMATAÇÃO DE DATAS -----
 function formatarData(dataISO) {
   if (!dataISO) return '';
   const [ano, mes, dia] = dataISO.split("-");
@@ -154,23 +156,41 @@ function removerDespesa(i) {
   calcularResumo();
 }
 
+// ----- CATEGORIAS DESPESAS -----
 function adicionarCategoria() {
   const select = document.getElementById("despesaCategoria");
-  const novaCategoria = document.getElementById("novaCategoria").value.trim();
-  if (!novaCategoria) return alert("Digite o nome da categoria!");
+  const novaCategoriaInput = document.getElementById("novaCategoria");
+  const novaCategoria = novaCategoriaInput.value.trim();
+  if (!novaCategoria) return alert("Digite um nome para a categoria!");
 
-  if (Array.from(select.options).some(opt => opt.value.toLowerCase() === novaCategoria.toLowerCase())) {
+  let categorias = JSON.parse(localStorage.getItem("categoriasDespesas")) || [
+    "Alimentação","Transporte","Compras","Saúde","Pessoal","Assinaturas","Outros"
+  ];
+
+  if (categorias.some(cat => cat.toLowerCase() === novaCategoria.toLowerCase())) {
     return alert("Essa categoria já existe!");
   }
 
-  const option = document.createElement("option");
-  option.value = novaCategoria;
-  option.textContent = novaCategoria;
+  categorias = categorias.filter(c => c !== "Outros");
+  categorias.push(novaCategoria);
+  categorias.sort();
+  categorias.push("Outros");
 
-  const outros = Array.from(select.options).find(opt => opt.value === "Outros");
-  select.insertBefore(option, outros);
-  select.value = novaCategoria;
-  document.getElementById("novaCategoria").value = "";
+  localStorage.setItem("categoriasDespesas", JSON.stringify(categorias));
+  carregarCategoriasDespesas();
+  novaCategoriaInput.value = "";
+}
+
+function carregarCategoriasDespesas() {
+  const select = document.getElementById("despesaCategoria");
+  let categorias = JSON.parse(localStorage.getItem("categoriasDespesas")) || [];
+  select.innerHTML = "";
+  categorias.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
+  });
 }
 
 function removerCategoria() {
@@ -179,6 +199,10 @@ function removerCategoria() {
   if (!categoria || categoria === "Outros") return alert("Selecione uma categoria válida para remover.");
 
   select.remove(select.selectedIndex);
+
+  let categorias = Array.from(select.options).map(opt => opt.value);
+  localStorage.setItem("categoriasDespesas", JSON.stringify(categorias));
+
   select.value = "";
 }
 
@@ -206,12 +230,10 @@ function salvarLembrete() {
   localStorage.setItem("lembretes", JSON.stringify(lembretes));
   mostrarLembretes();
 
-  // Limpar campos
   document.getElementById("lembrete").value = "";
   document.getElementById("lembreteData").value = "";
   document.getElementById("lembreteCategoria").value = "";
 
-  // Google Calendar
   if (dataInput) criarLinkEventoGoogleLocal(texto, categoria, dataInput);
 }
 
@@ -251,31 +273,51 @@ function removerLembrete(i) {
   mostrarLembretes();
 }
 
+// ----- CATEGORIAS LEMBRETES -----
 function adicionarCategoriaLembrete() {
   const select = document.getElementById("lembreteCategoria");
-  const novaCategoria = document.getElementById("novaCategoriaLembrete").value.trim();
-  if (!novaCategoria) return alert("Digite o nome da categoria!");
+  const novaCategoriaInput = document.getElementById("novaCategoriaLembrete");
+  const novaCategoria = novaCategoriaInput.value.trim();
+  if (!novaCategoria) return alert("Digite um nome para a categoria!");
 
-  if (Array.from(select.options).some(opt => opt.value.toLowerCase() === novaCategoria.toLowerCase())) {
-    return alert("Categoria já existe!");
+  let categorias = JSON.parse(localStorage.getItem("categoriasLembretes")) || [
+    "Aniversário","Compras","Trabalho","Faculdade","Outros"
+  ];
+
+  if (categorias.some(cat => cat.toLowerCase() === novaCategoria.toLowerCase())) {
+    return alert("Essa categoria já existe!");
   }
 
-  const option = document.createElement("option");
-  option.value = novaCategoria;
-  option.textContent = novaCategoria;
+  categorias = categorias.filter(c => c !== "Outros");
+  categorias.push(novaCategoria);
+  categorias.sort();
+  categorias.push("Outros");
 
-  const outros = Array.from(select.options).find(opt => opt.value === "Outros");
-  select.insertBefore(option, outros);
-  select.value = novaCategoria;
-  document.getElementById("novaCategoriaLembrete").value = "";
+  localStorage.setItem("categoriasLembretes", JSON.stringify(categorias));
+  carregarCategoriasLembretes();
+  novaCategoriaInput.value = "";
+}
+
+function carregarCategoriasLembretes() {
+  const select = document.getElementById("lembreteCategoria");
+  let categorias = JSON.parse(localStorage.getItem("categoriasLembretes")) || [];
+  select.innerHTML = "";
+  categorias.forEach(cat => {
+    const option = document.createElement("option");
+    option.value = cat;
+    option.textContent = cat;
+    select.appendChild(option);
+  });
 }
 
 function removerCategoriaLembrete() {
   const select = document.getElementById("lembreteCategoria");
   const valor = select.value;
   if (!valor || valor === "Outros") return alert("Selecione uma categoria válida para remover.");
+
   select.remove(select.selectedIndex);
-  select.value = "";
+  let categorias = Array.from(select.options).map(opt => opt.value);
+  localStorage.setItem("categoriasLembretes", JSON.stringify(categorias));
 }
 
 // ----- GOOGLE CALENDAR -----
